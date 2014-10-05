@@ -31,10 +31,11 @@ public class JavaUtilLogMessenger implements LogMessenger {
     private final StreamHandler streamHandler;
 
     /**
-     * Configures a {@link Handler} to store new messages. The logging level   
-     * @param loggerNames
-     * @param loggingLevel
-     * @param displayRootConsoleLogging
+     * Configures a {@link Handler} to store new messages.   
+     * @param loggerNames the names of the loggers to display logging information from
+     * @param loggingLevel the logging levels to display logging information from
+     * @param displayRootConsoleLogging if <code>false</code> the root console handler will be removed, so that the logging information
+     * does not also appear on the console 
      */
     public JavaUtilLogMessenger(String loggerNames, Level loggingLevel, boolean displayRootConsoleLogging) {
         baos = new ByteArrayOutputStream(4096);

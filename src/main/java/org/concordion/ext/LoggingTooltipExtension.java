@@ -27,19 +27,17 @@ import org.concordion.ext.tooltip.TooltipRenderer;
 
 /**
  * Annotates the Concordion HTML output with logging information captured using a LogMessenger.
- * <p>
- * <h4>Default Configuration</h4>
- * By default, this extension will capture all output from the root logger and disable console logging of the root logger.
- * <p>
- * <h4>Custom Configuration</h4>
- * The extension can be customised using the custom constructor. The logging can be restricted to named loggers,
- * and by logging levels. The output of logging to the console can also be enabled.
- * <p>
- * <h4>Custom Log Framework</h4>
- * An alternate LogMessenger implementation can be provided.  The default uses java.util.logging.
- * <p>
+ * <p><b>Default Configuration</b></p>
+ * <p>By default, this extension will capture all output from the root logger and disable console logging of the root logger.</p>
+ * 
+ * <p><b>Custom Configuration</b></p>
+ * <p>The extension can be customised using the custom constructor. The logging can be restricted to named loggers,
+ * and by logging levels. The output of logging to the console can also be enabled.</p>
+ * 
+ * <p><b>Custom Log Framework</b></p>
+ * <p>An alternate LogMessenger implementation can be provided.  The default uses java.util.logging.</p>
  *
- * Thanks to Trent Richardson for the <a href="http://trentrichardson.com/examples/csstooltips/">CSS Tooltip</a> implementation.
+ * <p>Thanks to Trent Richardson for the <a href="http://trentrichardson.com/examples/csstooltips/">CSS Tooltip</a> implementation.</p>
  */
 public class LoggingTooltipExtension implements ConcordionExtension {
 
@@ -64,7 +62,7 @@ public class LoggingTooltipExtension implements ConcordionExtension {
 
     /**
      * Implementation that permits a custom LogMessenger.
-     * @param messenger
+     * @param messenger custom log messenger
      */
     public LoggingTooltipExtension(LogMessenger messenger) {
         this.logMessenger = messenger;
