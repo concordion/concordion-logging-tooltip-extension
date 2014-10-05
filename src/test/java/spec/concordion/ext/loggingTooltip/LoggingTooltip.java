@@ -21,7 +21,6 @@ import org.concordion.integration.junit4.ConcordionRunner;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 
-import test.concordion.EmbedExtensionWithConcordionNamespaceFactory;
 import test.concordion.TestRig;
 
 @RunWith(ConcordionRunner.class)
@@ -31,8 +30,7 @@ public class LoggingTooltip {
     
     @Before 
     public void installExtension() {
-        System.setProperty("concordion.extensions", 
-                LoggingTooltipExtension.class.getName() + ", " + EmbedExtensionWithConcordionNamespaceFactory.class.getName());
+        System.setProperty("concordion.extensions", LoggingTooltipExtension.class.getName());
     }
     
     public String render(String fragment) throws Exception {
