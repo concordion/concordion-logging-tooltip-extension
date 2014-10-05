@@ -22,8 +22,7 @@ To install the extension with default configuration, either annotate the fixture
     @Extensions(LoggingTooltipExtension.class)
 ```
 
-or set the system property `concordion.extensions` to
-`org.concordion.ext.LoggingTooltipExtension`
+or set the system property `concordion.extensions` to `org.concordion.ext.LoggingTooltipExtension`.
 
 ## Custom Configuration
 
@@ -44,7 +43,7 @@ For those not using java.util.logging, a custom LogMessenger can be provided. Se
 
 # Further info
 
-* [Specification](http://concordion.github.io/concordion-logging-tooltip-extension/spec/LoggingTooltip.html)
+* [Specification](http://concordion.github.io/concordion-logging-tooltip-extension/spec/spec/concordion/ext/loggingTooltip/LoggingTooltip.html)
 * [API](http://concordion.github.io/concordion-logging-tooltip-extension/api/index.html)
 * [Demo project](http://github.com/concordion/concordion-logging-tooltip-extension-demo)
 
