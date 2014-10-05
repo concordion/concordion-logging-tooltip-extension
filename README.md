@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/concordion/concordion-logging-tooltip-extension.svg?branch=master)](https://travis-ci.org/concordion/concordion-logging-tooltip-extension)
+
 This [Concordion](http://www.concordion.org) extension adds logging information unobtrusively to the Concordion output. The logging information is only displayed when hovering over the tooltip.
 
 The [demo project](http://github.com/concordion//concordion-logging-tooltip-extension-demo) demonstrates this extension.
