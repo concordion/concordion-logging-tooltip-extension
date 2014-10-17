@@ -14,6 +14,11 @@ Revealing the implementation detail can help to improve the level of trust in th
 
 The extension captures the logging information from java.util.logging.
 
+# Installation
+The extension is available from [Maven Central](http://search.maven.org/#artifactdetails%7Corg.concordion%7Cconcordion-screenshot-extension%7C1.1.2%7Cjar).</a>
+
+# Configuration
+
 ## Default Configuration
 
 By default, this extension will capture all output from the root logger and disable console logging of the root logger.
