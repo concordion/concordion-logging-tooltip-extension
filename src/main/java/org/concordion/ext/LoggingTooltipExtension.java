@@ -14,8 +14,11 @@
  */
 package org.concordion.ext;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.awt.Button;
 
 import org.concordion.api.Resource;
 import org.concordion.api.extension.ConcordionExtender;
@@ -39,7 +42,7 @@ import org.concordion.ext.tooltip.TooltipRenderer;
  *
  * <p>Thanks to Trent Richardson for the <a href="http://trentrichardson.com/examples/csstooltips/">CSS Tooltip</a> implementation.</p>
  */
-public class LoggingTooltipExtension implements ConcordionExtension {
+public class LoggingTooltipExtension implements ConcordionExtension, ActionListener {
 
     private static final String TOOLTIP_CSS_SOURCE_PATH = "/org/concordion/ext/resource/tooltip.css";
     private static final Resource TOOLTIP_CSS_TARGET_RESOURCE = new Resource("/tooltip.css");
@@ -52,6 +55,9 @@ public class LoggingTooltipExtension implements ConcordionExtension {
     private static final String INFO_RESOURCE_PATH = "/org/concordion/ext/resource/i16.png";
 
     private final LogMessenger logMessenger;
+
+    private Button toggleTooltipButton = null;
+    private boolean showTooltip = true;
 
     /**
      * Default constructor that logs output from all java.util.loggers, with a {@link Level} of <code>INFO</code> or higher, and disables the console output of the root logger.
@@ -81,9 +87,23 @@ public class LoggingTooltipExtension implements ConcordionExtension {
         this.logMessenger = new JavaUtilLogMessenger(loggerNames, loggingLevel, displayRootConsoleLogging);
     }
 
+    /**
+     * Permits to use a button to show/hide the tooltip
+     *
+     * @param toggleTooltipButton button to show/hide the tooltip when clicked
+     */
+    public void setToggleTooltipButton(Button toggleTooltipButton) {
+        this.toggleTooltipButton = toggleTooltipButton;
+    }
+
     @Override
     public void addTo(ConcordionExtender concordionExtender) {
-        LogMessageTooltipWriter extension = new LogMessageTooltipWriter(new TooltipRenderer(INFO_IMAGE_RESOURCE), logMessenger);
+        LogMessageTooltipWriter extension = new LogMessageTooltipWriter(new TooltipRenderer(INFO_IMAGE_RESOURCE), logMessenger, showTooltip);
+
+        if(this.toggleTooltipButton != null) {
+            this.toggleTooltipButton.addActionListener(this);
+            this.toggleTooltipButton.addActionListener(extension);
+        }
 
         concordionExtender.withExecuteListener(extension).withAssertEqualsListener(extension).withAssertTrueListener(extension)
                 .withAssertFalseListener(extension).withVerifyRowsListener(extension).withThrowableListener(extension);
@@ -94,4 +114,8 @@ public class LoggingTooltipExtension implements ConcordionExtension {
         concordionExtender.withResource(INFO_RESOURCE_PATH, INFO_IMAGE_RESOURCE);
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        showTooltip = !showTooltip;
+    }
 }

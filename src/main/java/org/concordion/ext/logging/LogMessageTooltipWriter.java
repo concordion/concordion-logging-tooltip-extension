@@ -14,6 +14,9 @@
  */
 package org.concordion.ext.logging;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import org.concordion.api.Element;
 import org.concordion.api.Resource;
 import org.concordion.api.listener.AssertEqualsListener;
@@ -37,15 +40,21 @@ import org.concordion.ext.tooltip.TooltipRenderer;
  * Writes any new log messages to tooltips when invoked by Concordion events.   
  */
 public class LogMessageTooltipWriter implements AssertEqualsListener, AssertTrueListener, AssertFalseListener, ExecuteListener,
-        SpecificationProcessingListener, VerifyRowsListener, ThrowableCaughtListener {
+        SpecificationProcessingListener, VerifyRowsListener, ThrowableCaughtListener, ActionListener {
 
     private final TooltipRenderer renderer;
     private final LogMessenger logMessenger;
     private Resource resource;
+    private boolean showTooltip;
 
     public LogMessageTooltipWriter(TooltipRenderer renderer, LogMessenger logMessenger) {
         this.logMessenger = logMessenger;
         this.renderer = renderer;
+    }
+
+    public LogMessageTooltipWriter(TooltipRenderer renderer, LogMessenger logMessenger, boolean showTooltip) {
+        this(renderer, logMessenger);
+        this.showTooltip = showTooltip;
     }
 
     @Override
@@ -91,10 +100,18 @@ public class LogMessageTooltipWriter implements AssertEqualsListener, AssertTrue
     public void surplusRow(SurplusRowEvent event) {
     }
 
+    /**
+     * Possibility to hide/show the tooltip when an action event is fired
+     */
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        showTooltip = !showTooltip;
+    }
+
     private void renderLogMessages(Element element) {
         String text = logMessenger.getNewLogMessages();
 
-        if (text.length() > 0) {
+        if (text.length() > 0 && showTooltip) {
             renderer.renderTooltip(resource, element, text);
         }
     }
