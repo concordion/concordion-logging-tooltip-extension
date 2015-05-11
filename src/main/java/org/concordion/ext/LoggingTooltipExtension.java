@@ -93,7 +93,11 @@ public class LoggingTooltipExtension implements ConcordionExtension, ActionListe
      * @param toggleTooltipButton button to show/hide the tooltip when clicked
      */
     public void setToggleTooltipButton(Button toggleTooltipButton) {
+        if(this.toggleTooltipButton != null) {
+            this.toggleTooltipButton.removeActionListener(this);
+        }
         this.toggleTooltipButton = toggleTooltipButton;
+        this.toggleTooltipButton.addActionListener(this);
     }
 
     @Override
@@ -101,7 +105,6 @@ public class LoggingTooltipExtension implements ConcordionExtension, ActionListe
         LogMessageTooltipWriter extension = new LogMessageTooltipWriter(new TooltipRenderer(INFO_IMAGE_RESOURCE), logMessenger, showTooltip);
 
         if(this.toggleTooltipButton != null) {
-            this.toggleTooltipButton.addActionListener(this);
             this.toggleTooltipButton.addActionListener(extension);
         }
 
