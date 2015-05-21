@@ -49,10 +49,10 @@ public class TooltipRenderer {
      * @param element the element that the tooltip is to be added to
      * @param text the text to include in the tooltip
      */
-    public void renderTooltip(Resource resource, Element element, String text) {
+    public Element renderTooltip(Resource resource, Element element, String text, boolean displayTooltip) {
         buttonId++;
         
-        Element tooltip = createTooltip(resource.getRelativePath(tooltipImageResource), text);
+        Element tooltip = createTooltip(resource.getRelativePath(tooltipImageResource), text, displayTooltip);
         if (element.getLocalName().equals("table")) {
             Element tr = element.getFirstDescendantNamed("tr");
             Element th = new Element("th"); 
@@ -72,9 +72,11 @@ public class TooltipRenderer {
             element.appendNonBreakingSpace();
             element.appendSister(tooltip);
         }
+
+        return tooltip;
     }
     
-   private Element createTooltip(String relativePathToImage, String text) {
+   private Element createTooltip(String relativePathToImage, String text, boolean displayTooltip) {
         Element tt = new Element("a").addAttribute("href", "#").addStyleClass("tt");
         tt.appendChild(new Element("img").addAttribute("src", relativePathToImage).addAttribute("alt", "i").appendNonBreakingSpace());
         Element tooltip = new Element("span").addStyleClass("tooltip");
@@ -88,6 +90,18 @@ public class TooltipRenderer {
         tooltip.appendChild(textChild);
         tooltip.appendChild(new Element("span").addStyleClass("bottom").appendText(""));
         
+        if(!displayTooltip) {
+            setTooltipDisplay(tt, false);
+        }
+        
         return tt;
     }
+
+   public void setTooltipDisplay(Element tooltip, boolean displayed) {
+	   if(!displayed) {
+		   tooltip.addAttribute("style", "display: none;");
+	   } else {
+		   tooltip.removeAttribute("style");
+	   }
+   }
 }

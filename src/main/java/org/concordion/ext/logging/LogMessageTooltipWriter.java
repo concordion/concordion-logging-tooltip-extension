@@ -16,6 +16,8 @@ package org.concordion.ext.logging;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.concordion.api.Element;
 import org.concordion.api.Resource;
@@ -45,16 +47,18 @@ public class LogMessageTooltipWriter implements AssertEqualsListener, AssertTrue
     private final TooltipRenderer renderer;
     private final LogMessenger logMessenger;
     private Resource resource;
-    private boolean showTooltip;
+    private List<Element> tooltips;
+    private boolean displayTooltip = true;
 
     public LogMessageTooltipWriter(TooltipRenderer renderer, LogMessenger logMessenger) {
         this.logMessenger = logMessenger;
         this.renderer = renderer;
+        this.tooltips = new ArrayList<>();
     }
 
-    public LogMessageTooltipWriter(TooltipRenderer renderer, LogMessenger logMessenger, boolean showTooltip) {
+    public LogMessageTooltipWriter(TooltipRenderer renderer, LogMessenger logMessenger, boolean displayTooltip) {
         this(renderer, logMessenger);
-        this.showTooltip = showTooltip;
+        this.displayTooltip = displayTooltip;
     }
 
     @Override
@@ -100,19 +104,23 @@ public class LogMessageTooltipWriter implements AssertEqualsListener, AssertTrue
     public void surplusRow(SurplusRowEvent event) {
     }
 
-    /**
-     * Possibility to hide/show the tooltip when an action event is fired
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-        showTooltip = !showTooltip;
-    }
-
     private void renderLogMessages(Element element) {
         String text = logMessenger.getNewLogMessages();
 
-        if (text.length() > 0 && showTooltip) {
-            renderer.renderTooltip(resource, element, text);
+        if (text.length() > 0) {
+            Element tt = renderer.renderTooltip(resource, element, text, displayTooltip);
+            tooltips.add(tt);
+        }
+    }
+
+    /**
+     * Show/Hide the tooltip when an ActionEvent is fired
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        displayTooltip = !displayTooltip;
+        for(Element tt : tooltips) {
+            renderer.setTooltipDisplay(tt, displayTooltip);
         }
     }
 }
