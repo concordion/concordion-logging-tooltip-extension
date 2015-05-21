@@ -44,11 +44,22 @@ The easiest way is to use the `@Extension` annotation on a [LoggingTooltipExtens
             new LoggingTooltipExtension(loggers, Level.FINE, false);
 ```
 
-The ability to show/hide the tooltip with a Button has also been added:
+The ability to show/hide the tooltip with a button has also been added (either in Java or JavaScript):
 
+* In Java:
 ```java
-        Button myButton = new Button("Show/hide tooltip");
-        extension.setToggleTooltipButton(myButton);
+        @Extension
+        LoggingTooltipExtension extension = new LoggingTooltipExtension();
+        
+        // By implementing the TooltipButton interface
+        TooltipButton myButton = new ToggleTooltipButton();
+        extension.setTooltipButton(myButton);
+```
+
+* In JavaScript:
+```html
+        <!-- By calling the toggleTooltip() function -->
+        <input type="button" onclick="toggleTooltip();" value="Toggle tooltip" />
 ```
 
 ## Using other loggers
