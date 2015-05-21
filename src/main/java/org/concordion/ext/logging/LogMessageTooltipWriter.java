@@ -53,7 +53,7 @@ public class LogMessageTooltipWriter implements AssertEqualsListener, AssertTrue
     public LogMessageTooltipWriter(TooltipRenderer renderer, LogMessenger logMessenger) {
         this.logMessenger = logMessenger;
         this.renderer = renderer;
-        this.tooltips = new ArrayList<>();
+        this.tooltips = new ArrayList<Element>();
     }
 
     public LogMessageTooltipWriter(TooltipRenderer renderer, LogMessenger logMessenger, boolean displayTooltip) {
