@@ -14,9 +14,10 @@ ext {
     inceptionYear = '2011'   
 }
 
-githubPages {
+gitPublish {
     repoUri = 'git@github.com:concordion/concordion-logging-tooltip-extension.git'
-    pages {
+    branch = 'gh-pages'
+	contents {
         from 'docs'
     	
         from ('build/reports/spec/') {
