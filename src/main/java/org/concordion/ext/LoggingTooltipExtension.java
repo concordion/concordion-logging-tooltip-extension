@@ -14,6 +14,8 @@
  */
 package org.concordion.ext;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,6 +25,7 @@ import org.concordion.api.extension.ConcordionExtension;
 import org.concordion.ext.logging.JavaUtilLogMessenger;
 import org.concordion.ext.logging.LogMessageTooltipWriter;
 import org.concordion.ext.logging.LogMessenger;
+import org.concordion.ext.tooltip.TooltipButton;
 import org.concordion.ext.tooltip.TooltipRenderer;
 
 /**
@@ -39,10 +42,13 @@ import org.concordion.ext.tooltip.TooltipRenderer;
  *
  * <p>Thanks to Trent Richardson for the <a href="http://trentrichardson.com/examples/csstooltips/">CSS Tooltip</a> implementation.</p>
  */
-public class LoggingTooltipExtension implements ConcordionExtension {
+public class LoggingTooltipExtension implements ConcordionExtension, ActionListener {
 
     private static final String TOOLTIP_CSS_SOURCE_PATH = "/org/concordion/ext/resource/tooltip.css";
     private static final Resource TOOLTIP_CSS_TARGET_RESOURCE = new Resource("/tooltip.css");
+
+    private static final String TOOLTIP_JS_SOURCE_PATH = "/org/concordion/ext/resource/tooltip.js";
+    private static final Resource TOOLTIP_JS_TARGET_RESOURCE = new Resource("/tooltip.js");
 
     private static final Resource BUBBLE_FILLER_IMAGE_RESOURCE = new Resource("/image/bubble_filler.gif");
     private static final String BUBBLE_FILLER_RESOURCE_PATH = "/org/concordion/ext/resource/bubble_filler.gif";
@@ -52,6 +58,9 @@ public class LoggingTooltipExtension implements ConcordionExtension {
     private static final String INFO_RESOURCE_PATH = "/org/concordion/ext/resource/i16.png";
 
     private final LogMessenger logMessenger;
+
+    private TooltipButton tooltipButton = null;
+    private boolean displayTooltip = true;
 
     /**
      * Default constructor that logs output from all java.util.loggers, with a {@link Level} of <code>INFO</code> or higher, and disables the console output of the root logger.
@@ -81,17 +90,60 @@ public class LoggingTooltipExtension implements ConcordionExtension {
         this.logMessenger = new JavaUtilLogMessenger(loggerNames, loggingLevel, displayRootConsoleLogging);
     }
 
+    /**
+     * Permits to use a button to show/hide the tooltips
+     *
+     * @param tooltipButton button that shows/hides the tooltips when clicked
+     */
+    public void setTooltipButton(TooltipButton tooltipButton) {
+        if(this.tooltipButton != null) {
+            for(ActionListener a : this.tooltipButton.getActionListeners()) {
+                this.tooltipButton.removeActionListener(a);
+            }
+        }
+        this.tooltipButton = tooltipButton;
+        this.tooltipButton.addActionListener(this);
+    }
+
+    /**
+     * Manually show/hide tooltips
+     *
+     * @param displayTooltip boolean indicates if tooltips are displayed or not
+     */
+    public void toggleTooltip(boolean displayTooltip) {
+        if(this.displayTooltip != displayTooltip) {
+            if(this.tooltipButton != null) {
+	            // If display state changes via this method, an event is dispatched to all listeners
+	            ActionEvent e = new ActionEvent(this.tooltipButton, ActionEvent.ACTION_PERFORMED, "Tooltip toggled");
+	            for(ActionListener a : this.tooltipButton.getActionListeners()) {
+	                a.actionPerformed(e);
+	            }
+            } else {
+                this.displayTooltip = displayTooltip;
+            }
+        }
+    }
+
     @Override
     public void addTo(ConcordionExtender concordionExtender) {
-        LogMessageTooltipWriter extension = new LogMessageTooltipWriter(new TooltipRenderer(INFO_IMAGE_RESOURCE), logMessenger);
+        LogMessageTooltipWriter extension = new LogMessageTooltipWriter(new TooltipRenderer(INFO_IMAGE_RESOURCE), logMessenger, displayTooltip);
+
+        if(this.tooltipButton != null) {
+            this.tooltipButton.addActionListener(extension);
+        }
 
         concordionExtender.withExecuteListener(extension).withAssertEqualsListener(extension).withAssertTrueListener(extension)
                 .withAssertFalseListener(extension).withVerifyRowsListener(extension).withThrowableListener(extension);
         concordionExtender.withSpecificationProcessingListener(extension);
         concordionExtender.withLinkedCSS(TOOLTIP_CSS_SOURCE_PATH, TOOLTIP_CSS_TARGET_RESOURCE);
+        concordionExtender.withLinkedJavaScript(TOOLTIP_JS_SOURCE_PATH, TOOLTIP_JS_TARGET_RESOURCE);
         concordionExtender.withResource(BUBBLE_RESOURCE_PATH, BUBBLE_IMAGE_RESOURCE);
         concordionExtender.withResource(BUBBLE_FILLER_RESOURCE_PATH, BUBBLE_FILLER_IMAGE_RESOURCE);
         concordionExtender.withResource(INFO_RESOURCE_PATH, INFO_IMAGE_RESOURCE);
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        displayTooltip = !displayTooltip;
+    }
 }

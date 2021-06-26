@@ -14,6 +14,11 @@
  */
 package org.concordion.ext.logging;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.concordion.api.Element;
 import org.concordion.api.Resource;
 import org.concordion.api.listener.AssertEqualsListener;
@@ -37,15 +42,23 @@ import org.concordion.ext.tooltip.TooltipRenderer;
  * Writes any new log messages to tooltips when invoked by Concordion events.   
  */
 public class LogMessageTooltipWriter implements AssertEqualsListener, AssertTrueListener, AssertFalseListener, ExecuteListener,
-        SpecificationProcessingListener, VerifyRowsListener, ThrowableCaughtListener {
+        SpecificationProcessingListener, VerifyRowsListener, ThrowableCaughtListener, ActionListener {
 
     private final TooltipRenderer renderer;
     private final LogMessenger logMessenger;
     private Resource resource;
+    private List<Element> tooltips;
+    private boolean displayTooltip = true;
 
     public LogMessageTooltipWriter(TooltipRenderer renderer, LogMessenger logMessenger) {
         this.logMessenger = logMessenger;
         this.renderer = renderer;
+        this.tooltips = new ArrayList<Element>();
+    }
+
+    public LogMessageTooltipWriter(TooltipRenderer renderer, LogMessenger logMessenger, boolean displayTooltip) {
+        this(renderer, logMessenger);
+        this.displayTooltip = displayTooltip;
     }
 
     @Override
@@ -95,7 +108,19 @@ public class LogMessageTooltipWriter implements AssertEqualsListener, AssertTrue
         String text = logMessenger.getNewLogMessages();
 
         if (text.length() > 0) {
-            renderer.renderTooltip(resource, element, text);
+            Element tt = renderer.renderTooltip(resource, element, text, displayTooltip);
+            tooltips.add(tt);
+        }
+    }
+
+    /**
+     * Show/Hide the tooltip when an ActionEvent is fired
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        displayTooltip = !displayTooltip;
+        for(Element tt : tooltips) {
+            renderer.setTooltipDisplay(tt, displayTooltip);
         }
     }
 }

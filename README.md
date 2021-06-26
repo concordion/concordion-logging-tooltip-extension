@@ -47,6 +47,24 @@ The easiest way is to use the `@Extension` annotation on a [LoggingTooltipExtens
             new LoggingTooltipExtension(loggers, Level.FINE, false);
 ```
 
+The ability to show/hide the tooltip with a button has also been added (either in Java or JavaScript):
+
+* In Java:
+```java
+        @Extension
+        LoggingTooltipExtension extension = new LoggingTooltipExtension();
+        
+        // By implementing the TooltipButton interface
+        TooltipButton myButton = new ToggleTooltipButton();
+        extension.setTooltipButton(myButton);
+```
+
+* In JavaScript:
+```html
+        <!-- By calling the toggleTooltip() function -->
+        <input type="button" onclick="toggleTooltip();" value="Toggle tooltip" />
+```
+
 ## Using other loggers
 
 For those not using java.util.logging, a custom LogMessenger can be provided. See the test class [AlternateLoggingTooltipExtensionFactory](https://github.com/concordion/concordion-extensions/blob/master/src/test/java/spec/concordion/ext/loggingTooltip/AlternateLoggingTooltipExtensionFactory.java) for a basic example.
